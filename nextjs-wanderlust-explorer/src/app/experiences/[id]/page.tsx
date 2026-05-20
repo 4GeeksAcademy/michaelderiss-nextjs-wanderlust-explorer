@@ -6,8 +6,9 @@ interface Props {
   params: { id: string };
 }
 
-export default function ExperienceDetailPage({ params }: Props) {
-  const experience = experiences.find((exp: Experience) => exp.id === params.id);
+export default async function ExperienceDetailPage({ params }: Props) {
+  const id = typeof params.id === "object" && "then" in params.id ? await params.id : params.id;
+  const experience = experiences.find((exp: Experience) => exp.id === id);
   if (!experience) return notFound();
 
   return (

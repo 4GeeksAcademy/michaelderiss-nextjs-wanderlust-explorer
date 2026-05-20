@@ -1,0 +1,13 @@
+{
+  "name": "wanderlust-root",
+  "private": true,
+  "workspaces": [
+    "nextjs-wanderlust-explorer"
+  ],
+  "scripts": {
+    "dev": "cd nextjs-wanderlust-explorer && npm run dev",
+    "build": "cd nextjs-wanderlust-explorer && npm run build",
+    "start": "cd nextjs-wanderlust-explorer && npm run start",
+    "lint": "cd nextjs-wanderlust-explorer && npm run lint"
+  }
+}
