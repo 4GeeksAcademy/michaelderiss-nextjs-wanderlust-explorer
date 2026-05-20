@@ -1,0 +1,25 @@
+<!-- Simple Wanderlust Labs logo SVG placeholder -->
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="60" cy="60" r="58" stroke="url(#paint0_linear)" stroke-width="4" fill="url(#paint1_radial)"/>
+  <path d="M60 30L70 60H50L60 30Z" fill="url(#paint2_linear)"/>
+  <circle cx="60" cy="75" r="12" fill="url(#paint3_radial)"/>
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="0.5" stop-color="#EC4899"/>
+      <stop offset="1" stop-color="#F59E42"/>
+    </linearGradient>
+    <radialGradient id="paint1_radial" cx="0" cy="0" r="1" gradientTransform="translate(60 60) rotate(90) scale(60)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF"/>
+      <stop offset="1" stop-color="#F3F4F6"/>
+    </radialGradient>
+    <linearGradient id="paint2_linear" x1="50" y1="30" x2="70" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#EC4899"/>
+    </linearGradient>
+    <radialGradient id="paint3_radial" cx="0" cy="0" r="1" gradientTransform="translate(60 75) scale(12)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F59E42"/>
+      <stop offset="1" stop-color="#EC4899"/>
+    </radialGradient>
+  </defs>
+</svg>
