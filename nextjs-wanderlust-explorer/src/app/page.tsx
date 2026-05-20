@@ -3,28 +3,30 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
-      <main className="flex flex-col items-center justify-center w-full max-w-2xl px-6 py-32 rounded-3xl shadow-xl bg-white/90 dark:bg-zinc-900/90">
+    <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-100 via-amber-50 to-sky-100 px-6 py-16 sm:px-10 sm:py-24">
+      <div className="pointer-events-none absolute -left-16 -top-20 h-56 w-56 rounded-full bg-orange-300/30 blur-3xl" />
+      <div className="pointer-events-none absolute -right-20 bottom-0 h-56 w-56 rounded-full bg-sky-300/30 blur-3xl" />
+      <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center text-center">
         <Image
           src="/wanderlust-logo.svg"
           alt="Wanderlust Labs Logo"
           width={120}
           height={120}
-          className="mb-8 drop-shadow-lg"
+          className="mb-8 drop-shadow"
         />
-        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-pink-500 to-yellow-500 mb-6 text-center">
+        <h1 className="mb-6 text-4xl font-black leading-tight text-zinc-900 sm:text-6xl">
           Discover Your Next Adventure
         </h1>
-        <p className="text-xl text-zinc-700 dark:text-zinc-200 mb-10 text-center max-w-lg">
-          Curated experiences from around the world. Find, filter, and save your favorites — from street-food tours in Bangkok to sailing trips in the Adriatic.
+        <p className="mb-10 max-w-xl text-lg text-zinc-700 sm:text-xl">
+          Curated experiences from around the world. Browse, filter, and save the trips you love in one clean explorer.
         </p>
         <Link
           href="/experiences"
-          className="inline-block px-8 py-4 rounded-full bg-gradient-to-r from-blue-600 via-pink-500 to-yellow-500 text-white text-lg font-semibold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-200"
+          className="inline-block rounded-xl bg-zinc-900 px-8 py-4 text-lg font-semibold text-white transition hover:-translate-y-0.5 hover:bg-zinc-700"
         >
           Explore Experiences
         </Link>
-      </main>
-    </div>
+      </div>
+    </section>
   );
 }

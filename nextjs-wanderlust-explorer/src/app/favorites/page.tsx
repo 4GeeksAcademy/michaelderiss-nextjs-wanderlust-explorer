@@ -1,46 +1,46 @@
-import { experiences } from "../../data/experiences";
-import { Experience } from "../../types/experience";
-import { useState } from "react";
+"use client";
+
 import Link from "next/link";
 
+import { ExperienceCard } from "@/components/ExperienceCard";
+import { useFavorites } from "@/context/FavoritesContext";
+import { experiences } from "@/data/experiences";
+
 export default function FavoritesPage() {
-  // For now, favorites are empty; will be lifted to a shared state later
-  const [favoriteIds] = useState<string[]>([]);
-  const favoriteExperiences = experiences.filter((exp: Experience) => favoriteIds.includes(exp.id));
+  const { favoriteIds, isFavorite, toggleFavorite } = useFavorites();
+
+  const favoriteExperiences = experiences.filter((experience) => favoriteIds.includes(experience.id));
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 dark:from-black dark:via-zinc-900 dark:to-zinc-800 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-extrabold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-yellow-500 to-blue-600">
-          Your Favorites
-        </h1>
-        {favoriteExperiences.length === 0 ? (
-          <p className="text-center text-zinc-600 dark:text-zinc-300">No favorites yet. Go explore and add some!</p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-            {favoriteExperiences.map((exp: Experience) => (
-              <div key={exp.id} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg overflow-hidden flex flex-col">
-                <img src={exp.imageUrl} alt={exp.title} className="h-48 w-full object-cover" />
-                <div className="p-4 flex-1 flex flex-col">
-                  <h2 className="text-xl font-bold mb-2 text-zinc-800 dark:text-zinc-100">{exp.title}</h2>
-                  <p className="text-zinc-600 dark:text-zinc-300 mb-2 line-clamp-2">{exp.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">{exp.category}</span>
-                    <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-semibold">{exp.destination}</span>
-                  </div>
-                  <div className="flex items-center justify-between mt-auto">
-                    <span className="text-lg font-bold text-yellow-600">${exp.price}</span>
-                    <span className="text-sm text-zinc-500">⭐ {exp.rating}</span>
-                  </div>
-                  <Link href={`/experiences/${exp.id}`} className="mt-4 inline-block text-blue-600 hover:underline font-medium">
-                    View Details
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    <section className="space-y-6">
+      <header>
+        <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Your Favorites</h1>
+        <p className="mt-2 text-zinc-600">Saved experiences appear here for quick access.</p>
+      </header>
+
+      {favoriteExperiences.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-12 text-center">
+          <p className="text-lg font-semibold text-zinc-800">No favorites yet</p>
+          <p className="mt-2 text-sm text-zinc-600">Tap a heart on the explorer to build your shortlist.</p>
+          <Link
+            href="/experiences"
+            className="mt-6 inline-flex rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700"
+          >
+            Go to explorer
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {favoriteExperiences.map((experience) => (
+            <ExperienceCard
+              key={experience.id}
+              experience={experience}
+              isFavorite={isFavorite(experience.id)}
+              onToggleFavorite={toggleFavorite}
+            />
+          ))}
+        </div>
+      )}
+    </section>
   );
 }

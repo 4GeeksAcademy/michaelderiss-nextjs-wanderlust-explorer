@@ -1,36 +1,83 @@
-import { experiences } from "../../../data/experiences";
-import { Experience } from "../../../types/experience";
-import { notFound } from "next/navigation";
+"use client";
 
-interface Props {
-  params: { id: string };
-}
+import { useEffect } from "react";
+import Link from "next/link";
+import { notFound, useParams } from "next/navigation";
 
-export default async function ExperienceDetailPage({ params }: Props) {
-  const id = typeof params.id === "object" && "then" in params.id ? await params.id : params.id;
-  const experience = experiences.find((exp: Experience) => exp.id === id);
-  if (!experience) return notFound();
+import { useFavorites } from "@/context/FavoritesContext";
+import { experiences } from "@/data/experiences";
+
+export default function ExperienceDetailPage() {
+  const params = useParams<{ id: string }>();
+  const { isFavorite, toggleFavorite } = useFavorites();
+
+  const experience = experiences.find((item) => item.id === params.id);
+
+  useEffect(() => {
+    if (!experience) {
+      return;
+    }
+
+    const previousTitle = document.title;
+    document.title = `${experience.title} | Wanderlust Explorer`;
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [experience]);
+
+  if (!experience) {
+    notFound();
+  }
+
+  const favorite = isFavorite(experience.id);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 dark:from-black dark:via-zinc-900 dark:to-zinc-800 p-8">
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col md:flex-row">
-        <img src={experience.imageUrl} alt={experience.title} className="h-80 w-full md:w-1/2 object-cover" />
-        <div className="p-8 flex-1 flex flex-col">
-          <h1 className="text-3xl font-extrabold mb-2 text-zinc-800 dark:text-zinc-100">{experience.title}</h1>
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">{experience.category}</span>
-            <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-semibold">{experience.destination}</span>
+    <section className="mx-auto max-w-4xl">
+      <Link href="/experiences" className="mb-6 inline-block text-sm font-semibold text-zinc-700 hover:text-zinc-900">
+        ← Back to explorer
+      </Link>
+
+      <article className="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-zinc-200">
+        <img src={experience.imageUrl} alt={experience.title} className="h-72 w-full object-cover sm:h-96" />
+
+        <div className="space-y-5 p-6 sm:p-8">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-black tracking-tight text-zinc-900">{experience.title}</h1>
+              <p className="mt-2 text-zinc-600">{experience.destination}</p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => toggleFavorite(experience.id)}
+              className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-800"
+            >
+              {favorite ? "♥ Saved" : "♡ Save"}
+            </button>
           </div>
-          <p className="text-zinc-700 dark:text-zinc-300 mb-4">{experience.description}</p>
-          <div className="flex items-center gap-6 mb-4">
-            <span className="text-lg font-bold text-yellow-600">${experience.price}</span>
-            <span className="text-sm text-zinc-500">⭐ {experience.rating}</span>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800">
+              {experience.category}
+            </span>
+            <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+              {experience.destination}
+            </span>
           </div>
-          <button className="mt-auto px-6 py-3 rounded-full bg-gradient-to-r from-blue-600 via-pink-500 to-yellow-500 text-white font-semibold shadow-lg hover:scale-105 transition-all duration-200">
-            Add to Favorites
-          </button>
+
+          <p className="text-base leading-7 text-zinc-700">{experience.description}</p>
+
+          <div className="flex gap-6 border-t border-zinc-200 pt-5 text-sm text-zinc-700">
+            <p>
+              <span className="block text-xs uppercase tracking-wide text-zinc-500">Price</span>${experience.price}
+            </p>
+            <p>
+              <span className="block text-xs uppercase tracking-wide text-zinc-500">Rating</span>★ {experience.rating.toFixed(1)}
+            </p>
+          </div>
         </div>
-      </div>
-    </div>
+      </article>
+    </section>
   );
 }

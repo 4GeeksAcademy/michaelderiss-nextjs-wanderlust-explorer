@@ -1,37 +1,134 @@
-import { experiences } from "../../data/experiences";
-import { Experience } from "../../types/experience";
-import Link from "next/link";
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+import { ExperienceCard } from "@/components/ExperienceCard";
+import { FilterBar } from "@/components/FilterBar";
+import { SearchBar } from "@/components/SearchBar";
+import { useFavorites } from "@/context/FavoritesContext";
+import { experiences } from "@/data/experiences";
+import { useExperienceFilters } from "@/hooks/useExperienceFilters";
+import { ExperienceCategory } from "@/types/experience";
+
+function readStringParam(params: URLSearchParams, key: string) {
+  return params.get(key) ?? "";
+}
 
 export default function ExperiencesPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const { isFavorite, toggleFavorite } = useFavorites();
+
+  const [searchTerm, setSearchTerm] = useState(() => readStringParam(searchParams, "search"));
+  const [category, setCategory] = useState<ExperienceCategory | "">(
+    () => readStringParam(searchParams, "category") as ExperienceCategory | "",
+  );
+  const [destination, setDestination] = useState(() => readStringParam(searchParams, "destination"));
+
+  useEffect(() => {
+    setSearchTerm(readStringParam(searchParams, "search"));
+    setCategory(readStringParam(searchParams, "category") as ExperienceCategory | "");
+    setDestination(readStringParam(searchParams, "destination"));
+  }, [searchParams]);
+
+  const destinations = useMemo(
+    () => Array.from(new Set(experiences.map((experience) => experience.destination))).sort(),
+    [],
+  );
+
+  const filteredExperiences = useExperienceFilters(experiences, {
+    searchTerm,
+    category,
+    destination,
+  });
+
+  const updateQueryParams = (nextValues: {
+    search?: string;
+    category?: ExperienceCategory | "";
+    destination?: string;
+  }) => {
+    const nextParams = new URLSearchParams(searchParams.toString());
+
+    const normalizedValues = {
+      search: nextValues.search ?? searchTerm,
+      category: nextValues.category ?? category,
+      destination: nextValues.destination ?? destination,
+    };
+
+    if (normalizedValues.search) {
+      nextParams.set("search", normalizedValues.search);
+    } else {
+      nextParams.delete("search");
+    }
+
+    if (normalizedValues.category) {
+      nextParams.set("category", normalizedValues.category);
+    } else {
+      nextParams.delete("category");
+    }
+
+    if (normalizedValues.destination) {
+      nextParams.set("destination", normalizedValues.destination);
+    } else {
+      nextParams.delete("destination");
+    }
+
+    const queryString = nextParams.toString();
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    updateQueryParams({ search: value });
+  };
+
+  const handleCategoryChange = (value: ExperienceCategory | "") => {
+    setCategory(value);
+    updateQueryParams({ category: value });
+  };
+
+  const handleDestinationChange = (value: string) => {
+    setDestination(value);
+    updateQueryParams({ destination: value });
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 dark:from-black dark:via-zinc-900 dark:to-zinc-800 p-8">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-extrabold mb-8 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-pink-500 to-yellow-500">
-          Explore Experiences
-        </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          {experiences.map((exp: Experience) => (
-            <div key={exp.id} className="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg overflow-hidden flex flex-col">
-              <img src={exp.imageUrl} alt={exp.title} className="h-48 w-full object-cover" />
-              <div className="p-4 flex-1 flex flex-col">
-                <h2 className="text-xl font-bold mb-2 text-zinc-800 dark:text-zinc-100">{exp.title}</h2>
-                <p className="text-zinc-600 dark:text-zinc-300 mb-2 line-clamp-2">{exp.description}</p>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">{exp.category}</span>
-                  <span className="px-2 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-semibold">{exp.destination}</span>
-                </div>
-                <div className="flex items-center justify-between mt-auto">
-                  <span className="text-lg font-bold text-yellow-600">${exp.price}</span>
-                  <span className="text-sm text-zinc-500">⭐ {exp.rating}</span>
-                </div>
-                <Link href={`/experiences/${exp.id}`} className="mt-4 inline-block text-blue-600 hover:underline font-medium">
-                  View Details
-                </Link>
-              </div>
-            </div>
+    <section className="space-y-6">
+      <header className="space-y-2">
+        <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Explore Experiences</h1>
+        <p className="text-zinc-600">Filter by search, category, and destination. Share your URL to keep filters.</p>
+      </header>
+
+      <div className="space-y-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-zinc-200">
+        <SearchBar value={searchTerm} onChange={handleSearchChange} />
+        <FilterBar
+          category={category}
+          destination={destination}
+          destinations={destinations}
+          onCategoryChange={handleCategoryChange}
+          onDestinationChange={handleDestinationChange}
+        />
+      </div>
+
+      {filteredExperiences.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-12 text-center">
+          <p className="text-lg font-semibold text-zinc-800">No results found</p>
+          <p className="mt-2 text-sm text-zinc-600">Try adjusting your search term or filters.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredExperiences.map((experience) => (
+            <ExperienceCard
+              key={experience.id}
+              experience={experience}
+              isFavorite={isFavorite(experience.id)}
+              onToggleFavorite={toggleFavorite}
+            />
           ))}
         </div>
-      </div>
-    </div>
+      )}
+    </section>
   );
 }

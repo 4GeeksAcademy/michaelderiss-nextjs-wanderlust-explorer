@@ -1,17 +1,32 @@
+"use client";
+
+import { useFavorites } from "@/context/FavoritesContext";
+
 export default function ProfilePage() {
+  const { favoriteIds } = useFavorites();
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 dark:from-black dark:via-zinc-900 dark:to-zinc-800 p-8">
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl max-w-md w-full p-10 flex flex-col items-center">
-        <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-600 via-pink-500 to-yellow-500 flex items-center justify-center mb-6">
-          <span className="text-4xl font-bold text-white">LM</span>
+    <section className="mx-auto max-w-2xl">
+      <article className="rounded-3xl bg-white p-8 shadow-sm ring-1 ring-zinc-200 sm:p-10">
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-900 text-2xl font-black text-white">
+            LM
+          </div>
+          <h1 className="text-2xl font-black text-zinc-900">Lea Moreau</h1>
+          <p className="mt-1 text-zinc-600">Product Manager and travel enthusiast</p>
         </div>
-        <h1 className="text-2xl font-extrabold mb-2 text-zinc-800 dark:text-zinc-100">Lea Moreau</h1>
-        <p className="text-zinc-600 dark:text-zinc-300 mb-4">Product Manager & Travel Enthusiast</p>
-        <div className="w-full flex flex-col items-center mt-6">
-          <span className="text-lg font-semibold text-pink-600">Saved Favorites</span>
-          <span className="text-3xl font-bold text-yellow-600 mt-1">0</span>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl bg-stone-100 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-500">Saved favorites</p>
+            <p className="mt-2 text-3xl font-black text-zinc-900">{favoriteIds.length}</p>
+          </div>
+          <div className="rounded-2xl bg-stone-100 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-500">Member since</p>
+            <p className="mt-2 text-3xl font-black text-zinc-900">2026</p>
+          </div>
         </div>
-      </div>
-    </div>
+      </article>
+    </section>
   );
 }
