@@ -1,9 +1,9 @@
 "use client";
 
-import { useFavorites } from "@/context/FavoritesContext";
+import { useFavoriteIds } from "@/hooks/useFavoriteIds";
 
 export default function ProfilePage() {
-  const { favoriteIds } = useFavorites();
+  const { favoriteIds } = useFavoriteIds();
 
   return (
     <section className="mx-auto max-w-2xl">

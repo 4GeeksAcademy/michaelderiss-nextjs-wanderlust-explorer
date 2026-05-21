@@ -3,11 +3,11 @@
 import Link from "next/link";
 
 import { ExperienceCard } from "@/components/ExperienceCard";
-import { useFavorites } from "@/context/FavoritesContext";
 import { experiences } from "@/data/experiences";
+import { useFavoriteIds } from "@/hooks/useFavoriteIds";
 
 export default function FavoritesPage() {
-  const { favoriteIds, isFavorite, toggleFavorite } = useFavorites();
+  const { favoriteIds, isFavorite, toggleFavorite } = useFavoriteIds();
 
   const favoriteExperiences = experiences.filter((experience) => favoriteIds.includes(experience.id));
 

@@ -4,12 +4,12 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 
-import { useFavorites } from "@/context/FavoritesContext";
 import { experiences } from "@/data/experiences";
+import { useFavoriteIds } from "@/hooks/useFavoriteIds";
 
 export default function ExperienceDetailPage() {
   const params = useParams<{ id: string }>();
-  const { isFavorite, toggleFavorite } = useFavorites();
+  const { isFavorite, toggleFavorite } = useFavoriteIds();
 
   const experience = experiences.find((item) => item.id === params.id);
 

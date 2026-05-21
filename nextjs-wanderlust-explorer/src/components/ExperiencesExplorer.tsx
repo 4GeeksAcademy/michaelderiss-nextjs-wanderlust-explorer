@@ -6,8 +6,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ExperienceCard } from "@/components/ExperienceCard";
 import { FilterBar } from "@/components/FilterBar";
 import { SearchBar } from "@/components/SearchBar";
-import { useFavorites } from "@/context/FavoritesContext";
 import { experiences } from "@/data/experiences";
+import { useFavoriteIds } from "@/hooks/useFavoriteIds";
 import { useExperienceFilters } from "@/hooks/useExperienceFilters";
 import { ExperienceCategory } from "@/types/experience";
 
@@ -19,7 +19,7 @@ export function ExperiencesExplorer() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { isFavorite, toggleFavorite } = useFavorites();
+  const { isFavorite, toggleFavorite } = useFavoriteIds();
 
   const [searchTerm, setSearchTerm] = useState(() => readStringParam(searchParams, "search"));
   const [category, setCategory] = useState<ExperienceCategory | "">(
